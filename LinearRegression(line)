@@ -1,0 +1,55 @@
+import numpy as np
+import pandas as pd
+import matplotlib
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D # для отрисовки 3D проекции
+matplotlib.rc("font", size=18) # для увеличения шрифта подписей графиков
+
+steps1 = pd.read_csv('Daily_Activity_2022_27_02.csv')
+steps = steps1[steps1['Id'] == 1644430081]
+
+fig = plt.figure(figsize=(10, 10)) # создаем картинку
+ax = plt.axes()
+featureOne = 'TotalDistance'
+featureTwo = 'Calories'
+
+# помещаем точки на график
+ax.scatter(steps[featureOne], steps[featureTwo], s=100)
+
+# отображаем картинку
+ax.set_xlabel(featureOne)
+ax.set_ylabel(featureTwo)
+
+
+# импортируем модуль, отвечающий за линейную регрессию
+from sklearn.linear_model import LinearRegression
+
+# выгружаем признаки и целевые значения в отдельные переменные
+X = steps[["TotalDistance"]]
+y = steps["Calories"]
+
+# создаем регрессор
+reg = LinearRegression().fit(X, y)
+
+# вытаскиваем нужные коэффициенты
+[b] = reg.coef_
+a = reg.intercept_
+
+# создаем функцию для предсказания
+def reg_prediction(feature):
+    return a + b * feature
+fig = plt.figure(figsize=(10, 10)) # создаем картинку
+ax = plt.axes()
+
+# помещаем точки на график
+ax.scatter(steps["TotalDistance"], steps["Calories"], s=100)
+
+# помещаем предсказания
+ax.plot([X.TotalDistance.min(), X.TotalDistance.max()], [reg_prediction(X.TotalDistance.min()), reg_prediction(X.TotalDistance.max())], c="red")
+
+# отображаем картинку
+featureOne = 'TotalDistance'
+featureTwo = 'Calories'
+ax.set_xlabel(featureOne)
+ax.set_ylabel(featureTwo)
+plt.show()
