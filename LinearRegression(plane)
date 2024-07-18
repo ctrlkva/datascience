@@ -12,22 +12,14 @@ houses = pd.read_csv('1.4_houses.csv')
 # выгружаем признаки и целевые значения в отдельные переменные
 X = houses[["dim_1", "dim_2"]]
 y = houses["price"]
+
 # создаем регрессор
 reg = LinearRegression().fit(X, y)
-
-fig = plt.figure(figsize=(10, 10)) # создаем картинку
-ax = plt.axes(projection="3d") # устанавливаем проекцию
-
-# помещаем точки на график
-ax.scatter(houses["dim_1"], houses["dim_2"], houses["price"], s=100)
-# называем оси
-ax.set_xlabel("dim_1")
-ax.set_ylabel("dim_2")
-ax.set_zlabel("price")
 
 # вытаскиваем нужные коэффициенты
 [b1, b2] = reg.coef_
 a = reg.intercept_
+
 # создаем функцию для предсказания цены дома
 def reg_prediction(dim_1, dim_2):
     return a + b1 * dim_1 + b2 * dim_2
